@@ -20,7 +20,8 @@
   <body>
     <canvas id="terrarium" aria-label="Living repository terrarium"></canvas>
 
-    <header class="topbar" aria-label="Repository loader">
+    <header class="topbar" aria-label="Repository command bar">
+      <a class="brand" href="https://github.com/PondSec/repo-terrarium">Repo Terrarium</a>
       <form id="repo-form" class="repo-form">
         <label for="repo-input">GitHub repo</label>
         <input
@@ -38,22 +39,41 @@
       </div>
     </header>
 
-    <main class="readout" aria-live="polite">
-      <p class="kicker">repo terrarium</p>
+    <main class="readout" aria-live="polite" aria-label="Current terrarium">
+      <p class="kicker">living repo</p>
       <h1 id="repo-title">PondSec/repo-terrarium</h1>
       <p id="repo-subtitle">Reading the repository shape...</p>
-      <ul id="languages" class="languages" aria-label="Top languages"></ul>
+      <section id="stats" class="stats" aria-label="Key genome stats"></section>
     </main>
 
-    <section id="stats" class="stats" aria-label="Repository stats"></section>
-
-    <section class="dna-readout" aria-label="Digital DNA">
-      <div class="dna-head">
-        <span>DNA strand</span>
+    <section class="inspector" tabindex="0" aria-label="Genome inspector">
+      <div class="inspector-tab">
+        <span>inspect</span>
         <strong id="gc-readout">GC 0%</strong>
       </div>
-      <div id="dna-sequence" class="dna-sequence" aria-label="Visible DNA sequence"></div>
-      <ol id="genes" class="genes" aria-label="Gene expression"></ol>
+      <div class="inspector-body">
+        <div class="inspector-section">
+          <div class="section-head">
+            <span>DNA strand</span>
+            <small>first 144 bases</small>
+          </div>
+          <div id="dna-sequence" class="dna-sequence" aria-label="Visible DNA sequence"></div>
+        </div>
+        <div class="inspector-section">
+          <div class="section-head">
+            <span>gene expression</span>
+            <small>repo phenotype</small>
+          </div>
+          <ol id="genes" class="genes" aria-label="Gene expression"></ol>
+        </div>
+        <div class="inspector-section">
+          <div class="section-head">
+            <span>species mix</span>
+            <small>top file families</small>
+          </div>
+          <ul id="languages" class="languages" aria-label="Top languages"></ul>
+        </div>
+      </div>
     </section>
 
     <aside class="examples" aria-label="Example repositories">
@@ -72,7 +92,7 @@
       <button id="fork-button" type="button">fork</button>
     </footer>
 
-    <a class="credit" href="https://github.com/PondSec/repo-terrarium">Joshua Pond</a>
+    <span class="credit">Joshua Pond</span>
 
     <script type="module" src="./src/app.js"></script>
   </body>
