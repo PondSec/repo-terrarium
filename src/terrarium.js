@@ -35,8 +35,8 @@ export class Terrarium {
 
     this.scene = new THREE.Scene();
     this.scene.fog = new THREE.FogExp2(0x050607, 0.035);
-    this.camera = new THREE.PerspectiveCamera(36, 1, 0.1, 120);
-    this.camera.position.set(0, 0.8, 26);
+    this.camera = new THREE.PerspectiveCamera(32, 1, 0.1, 120);
+    this.camera.position.set(0, 0.55, 22);
 
     this.root = new THREE.Group();
     this.organismGroup = new THREE.Group();
@@ -154,7 +154,7 @@ export class Terrarium {
     const fieldMaterial = new THREE.MeshBasicMaterial({
       color: palette[0],
       transparent: true,
-      opacity: 0.035,
+      opacity: 0.055,
       wireframe: true,
       blending: THREE.AdditiveBlending,
       depthWrite: false
@@ -164,12 +164,31 @@ export class Terrarium {
     field.userData.spin = new THREE.Vector3(0.0007 + this.random() * 0.001, 0.0004 + this.random() * 0.001, 0.0002);
     this.root.add(field);
 
+    const membrane = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(4.5, 5),
+      new THREE.MeshPhysicalMaterial({
+        color: palette[0],
+        emissive: palette[1],
+        emissiveIntensity: 0.08,
+        roughness: 0.14,
+        metalness: 0.05,
+        transparent: true,
+        opacity: 0.075,
+        transmission: 0.28,
+        thickness: 1.4,
+        depthWrite: false
+      })
+    );
+    membrane.scale.set(1.28, 0.78, 0.62);
+    membrane.userData.spin = new THREE.Vector3(0.0005, -0.0007, 0.0003);
+    this.root.add(membrane);
+
     const haloGeometry = new THREE.TorusGeometry(5.4, 0.012, 8, 180);
     for (let index = 0; index < 4; index += 1) {
       const material = new THREE.MeshBasicMaterial({
         color: palette[index % palette.length],
         transparent: true,
-        opacity: 0.18,
+        opacity: 0.22,
         blending: THREE.AdditiveBlending,
         depthWrite: false
       });
@@ -221,10 +240,10 @@ export class Terrarium {
     const rightPoints = [];
     const rungPositions = [];
     const compact = this.width < 760;
-    const xOffset = compact ? 3.9 : 6.9;
-    const scale = compact ? 0.72 : 1;
+    const xOffset = compact ? 3.25 : 5.85;
+    const scale = compact ? 0.58 : 0.82;
 
-    this.helixGroup.position.set(xOffset, compact ? 1.6 : 0.4, -2.3);
+    this.helixGroup.position.set(xOffset, compact ? 1.45 : 0.25, -1.9);
     this.helixGroup.rotation.copy(profile.tilt);
     this.helixGroup.scale.setScalar(scale);
     this.helixGroup.userData.profile = profile;
@@ -267,9 +286,9 @@ export class Terrarium {
   }
 
   buildOrganisms() {
-    const population = Math.round(this.genome.traits.population * (this.width < 760 ? 0.22 : 0.34));
+    const population = Math.round(this.genome.traits.population * (this.width < 760 ? 0.14 : 0.22));
     const paths = this.genome.paths.length ? this.genome.paths : [this.genome.repo];
-    const geometry = new THREE.SphereGeometry(0.24, 32, 18);
+    const geometry = new THREE.SphereGeometry(0.34, 36, 22);
 
     for (let index = 0; index < population; index += 1) {
       const path = paths[index % paths.length];
@@ -280,19 +299,23 @@ export class Terrarium {
       const material = new THREE.MeshPhysicalMaterial({
         color: organismColor,
         emissive: color(base),
-        emissiveIntensity: 0.18,
-        roughness: 0.18,
+        emissiveIntensity: 0.24,
+        roughness: 0.12,
         metalness: 0.05,
         transmission: 0.38,
         thickness: 0.7,
         transparent: true,
-        opacity: 0.64
+        opacity: 0.74
       });
       const mesh = new THREE.Mesh(geometry, material);
-      const radius = 1.4 + this.random() * 4.5;
+      const radius = 0.75 + this.random() * 3.35;
       const angle = (digest % 10000) / 10000 * TAU;
-      mesh.position.set(Math.cos(angle) * radius, Math.sin(angle * 1.7) * 1.35, Math.sin(angle) * radius * 0.55);
-      mesh.scale.setScalar(0.5 + this.random() * 0.8 + this.genome.digitalDna.phenotype.adhesion * 0.35);
+      mesh.position.set(Math.cos(angle) * radius, Math.sin(angle * 1.7) * 1.05, Math.sin(angle) * radius * 0.5);
+      mesh.scale.set(
+        0.72 + this.random() * 0.95 + this.genome.digitalDna.phenotype.adhesion * 0.32,
+        0.5 + this.random() * 0.62,
+        0.72 + this.random() * 0.95
+      );
       mesh.userData = {
         path,
         base,
@@ -302,7 +325,7 @@ export class Terrarium {
         speed: 0.12 + this.genome.digitalDna.phenotype.motility * 0.36 + this.random() * 0.1,
         energy: 0.5 + this.random() * 0.5,
         phase: this.random() * TAU,
-        originalScale: mesh.scale.x
+        originalScale: mesh.scale.clone()
       };
       this.organisms.push(mesh);
       this.organismGroup.add(mesh);
@@ -316,7 +339,7 @@ export class Terrarium {
 
     for (let index = 0; index < count; index += 1) {
       const base = this.genome.digitalDna.sequence[(index * 17 + this.genome.seed) % this.genome.digitalDna.sequence.length] || BASES[index % 4];
-      const radius = 2 + this.random() * 7.6;
+      const radius = 1.8 + this.random() * 6.2;
       const angle = this.random() * TAU;
       positions[index * 3] = Math.cos(angle) * radius;
       positions[index * 3 + 1] = (this.random() - 0.5) * 6.2;
@@ -332,7 +355,7 @@ export class Terrarium {
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
     const material = new THREE.PointsMaterial({
-      size: this.width < 760 ? 0.055 : 0.075,
+      size: this.width < 760 ? 0.045 : 0.065,
       vertexColors: true,
       transparent: true,
       opacity: 0.48,
@@ -404,7 +427,11 @@ export class Terrarium {
       }
       mesh.rotation.x += delta * (0.4 + data.speed);
       mesh.rotation.y += delta * (0.6 + data.speed);
-      mesh.scale.setScalar(data.originalScale * breathe);
+      mesh.scale.set(
+        data.originalScale.x * breathe,
+        data.originalScale.y * (0.96 + Math.sin(time * 1.2 + data.phase) * 0.05),
+        data.originalScale.z * breathe
+      );
     }
 
     if (this.nutrientPoints) {
