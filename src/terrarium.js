@@ -304,16 +304,22 @@ export class Terrarium {
         depthWrite: false
       });
       const mesh = new THREE.Mesh(geometry, material);
-      const radius = 0.75 + this.random() * 3.35;
+      const radius = 0.55 + this.random() * 2.45;
       const angle = (digest % 10000) / 10000 * TAU;
-      mesh.position.set(Math.cos(angle) * radius, Math.sin(angle * 1.7) * 0.95, Math.sin(angle) * radius * 0.5);
-      mesh.scale.setScalar(0.72 + this.random() * 0.74 + this.genome.digitalDna.phenotype.adhesion * 0.22);
+      const strand = (index / Math.max(1, population - 1) - 0.5) * 6.8;
+      mesh.position.set(
+        strand,
+        Math.sin(index * 0.42 + angle) * 0.95,
+        Math.cos(index * 0.31 + angle) * 0.85
+      );
+      mesh.scale.setScalar(0.52 + this.random() * 0.5 + this.genome.digitalDna.phenotype.adhesion * 0.16);
       mesh.userData = {
         path,
         base,
         digest,
         angle,
         radius,
+        strand,
         speed: 0.12 + this.genome.digitalDna.phenotype.motility * 0.36 + this.random() * 0.1,
         energy: 0.5 + this.random() * 0.5,
         phase: this.random() * TAU,
@@ -402,9 +408,9 @@ export class Terrarium {
       const data = mesh.userData;
       data.angle += delta * data.speed;
       const breathe = 1 + Math.sin(time * 1.8 + data.phase) * 0.08;
-      const targetX = Math.cos(data.angle) * data.radius;
-      const targetZ = Math.sin(data.angle) * data.radius * 0.55;
-      const targetY = Math.sin(data.angle * 1.7 + data.phase) * 1.35;
+      const targetX = data.strand + Math.cos(data.angle) * data.radius * 0.42;
+      const targetZ = Math.sin(data.angle + data.phase) * data.radius * 0.52;
+      const targetY = Math.sin(data.angle * 1.7 + data.phase) * 1.05;
 
       mesh.position.x = mix(mesh.position.x, targetX, 0.018);
       mesh.position.y = mix(mesh.position.y, targetY, 0.018);
