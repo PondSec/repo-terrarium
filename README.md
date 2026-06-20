@@ -1,30 +1,44 @@
 # Repo Terrarium
 
-Every GitHub repo has a shape. Repo Terrarium turns that shape into a small living ecosystem with its own visible DNA strand.
+Repo Terrarium turns any public GitHub repository into a living WebGL specimen with its own visible DNA.
 
-Type an `owner/repo`, and the page reads the public GitHub file tree, guesses the language mix, hashes the structure into a deterministic A/C/G/T genome, then grows a canvas simulation from it. Forks, rewrites and weird folder structures change the organism.
+Paste a repo like `rust-lang/rust`, `vercel/next.js`, or your own `owner/repo`. The app reads the public GitHub tree, converts the repository structure into a deterministic A/C/G/T sequence, translates that sequence into genes, and renders the result as a small living terrarium.
 
 Built by Joshua Pond.
 
 Demo: https://pondsec.github.io/repo-terrarium/  
 Repo: https://github.com/PondSec/repo-terrarium
 
-## Why I made it
+## What makes it different
 
-Most repo visualizers feel like charts. I wanted something that feels more like finding a tiny object under glass: same data, less spreadsheet energy.
+This is not a chart dressed up as art. The repo becomes a digital organism.
 
-It is static, client-side, and intentionally small. No backend, no account, no database.
+- File paths, sizes, languages, stars, forks and branch name become a deterministic DNA sequence.
+- DNA is read as codons.
+- Codons produce gene expression values such as motility, metabolism, replication, mutation, perception, photosynthesis and longevity.
+- The scene is rendered with Three.js/WebGL.
+- The DNA helix is visible and repo-specific. Different repos produce different helix geometry.
+- Forks mutate the system because the owner/repo seed and file tree change.
 
-## What it does
+## Use it
 
-- Loads a public GitHub repository by `owner/repo` or GitHub URL.
-- Fetches the repo metadata and recursive file tree from the GitHub API.
-- Builds a deterministic A/C/G/T DNA sequence from file paths, sizes, languages, folders, stars, forks and branch name.
-- Translates the sequence into codons and gene expression values.
-- Renders that genome as a live canvas terrarium with organisms, nutrients, energy, birth and death.
-- Draws a moving double-helix strand directly inside the terrarium.
-- Lets you pause, pulse, sonify, snapshot, share and open a fork flow for the current repo.
-- Falls back to an offline seed if GitHub rate-limits or the network is down.
+1. Open https://pondsec.github.io/repo-terrarium/
+2. Enter a public GitHub repo in `owner/repo` format.
+3. Press `grow`.
+4. Use `inspect` to open the DNA, gene and species details.
+5. Use `snapshot` to save a PNG.
+6. Use `share` to copy the current terrarium link.
+7. Use `fork` to open GitHub's fork flow and create a mutated lineage.
+
+## Controls
+
+- `pause`: stop or resume the simulation.
+- `pulse`: disturb the specimen.
+- `sound`: play a quiet generative tone from the repo genome.
+- `snapshot`: save the current view as PNG.
+- `share`: copy the current repo link.
+- `fork`: open the fork page for the current repo.
+- `inspect`: reveal DNA, genes, presets and language mix.
 
 ## Run locally
 
@@ -38,50 +52,23 @@ Then open:
 http://localhost:4173
 ```
 
-No install step is required because the app has no runtime dependencies.
-
-## Use it
-
-1. Enter a GitHub repo like `rust-lang/rust` or paste a GitHub URL.
-2. Press `grow`.
-3. Move your mouse over the canvas to disturb the field.
-4. Use `pulse` to throw a visible mutation wave into the ecosystem.
-5. Use `sound` for a quiet generative tone based on the top languages.
-6. Use `snapshot` to save a PNG.
-7. Use `share` to copy a link for the current repo.
-8. Use `fork` to open GitHub's fork page for the current repo.
-
-The same repo produces the same DNA. A fork produces a different one because the owner/repo seed and file tree change.
-
-## How the life model works
-
-This is not biological lab DNA. It is a deterministic digital genome using real DNA letters:
-
-- `A`, `C`, `G` and `T` come from the repo signature and file tree.
-- Bases are read in triplets as codons.
-- Codons are translated through a standard genetic-code-style table.
-- Gene windows produce traits like motility, metabolism, replication, mutation, perception, adhesion, photosynthesis and longevity.
-- Organisms move through the terrarium, eat base nutrients, spend energy, reproduce and die.
-
-If someone forks the repo and changes files, the fork gets a new genome and a different terrarium.
+No build step is needed. Three.js is loaded as a browser module.
 
 ## Fork loop
 
-The project is meant to be forkable:
+Repo Terrarium is meant to be forked and remixed:
 
-1. Open a repo in Repo Terrarium.
+1. Open a repo.
 2. Fork it.
-3. Change files, folders, languages or docs.
+3. Change files, folders, language mix, docs or structure.
 4. Open the fork in Repo Terrarium.
-5. Compare the original DNA with the fork DNA.
+5. Compare the DNA and organism with the original.
 
-The terrarium is deterministic, so changes are visible and repeatable.
+The same repo produces the same organism every time. A changed fork becomes a new lineage.
 
 ## Notes
 
-The point is not to be scientifically exact. It is a little instrument for seeing codebases differently.
-
-GitHub API requests are unauthenticated, so very heavy use can hit public rate limits. When that happens, the app still generates an offline terrarium from the repo name.
+GitHub API requests are unauthenticated. If public rate limits are hit, the app falls back to an offline deterministic genome from the repo name so the page still works.
 
 ## License
 
