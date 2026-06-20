@@ -566,6 +566,8 @@ h1 {
     right: 14px;
     bottom: 110px;
     width: auto;
+    padding: 14px 0 0;
+    background: linear-gradient(180deg, rgba(3, 5, 5, 0), rgba(3, 5, 5, 0.62) 18%, rgba(3, 5, 5, 0.74));
   }
 
   h1 {
