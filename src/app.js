@@ -20,6 +20,9 @@ const shareButton = document.querySelector("#share-button");
 const snapshotButton = document.querySelector("#snapshot-button");
 const soundButton = document.querySelector("#sound-button");
 const forkButton = document.querySelector("#fork-button");
+const inspector = document.querySelector("#inspector");
+const inspectToggle = document.querySelector("#inspect-toggle");
+const inspectorClose = document.querySelector("#inspector-close");
 
 const terrarium = new Terrarium(canvas);
 let activeGenome = null;
@@ -29,6 +32,12 @@ let sonifier = null;
 function setStatus(message, tone = "plain") {
   statusText.textContent = message;
   statusText.dataset.tone = tone;
+}
+
+function setInspector(open) {
+  inspector.classList.toggle("is-open", open);
+  inspector.setAttribute("aria-hidden", open ? "false" : "true");
+  inspectToggle.setAttribute("aria-expanded", open ? "true" : "false");
 }
 
 function urlForRepo(repo) {
@@ -278,7 +287,12 @@ form.addEventListener("submit", (event) => {
 });
 
 for (const button of examples) {
-  button.addEventListener("click", () => loadRepo(button.dataset.repo));
+  button.addEventListener("click", () => {
+    loadRepo(button.dataset.repo);
+    if (window.matchMedia("(max-width: 980px)").matches) {
+      setInspector(false);
+    }
+  });
 }
 
 pauseButton.addEventListener("click", () => {
@@ -322,6 +336,22 @@ forkButton.addEventListener("click", () => {
     return;
   }
   window.open(`https://github.com/${activeGenome.repo}/fork`, "_blank", "noopener");
+});
+
+inspectToggle.addEventListener("click", () => {
+  setInspector(!inspector.classList.contains("is-open"));
+});
+
+inspectorClose.addEventListener("click", () => {
+  setInspector(false);
+  inspectToggle.focus();
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && inspector.classList.contains("is-open")) {
+    setInspector(false);
+    inspectToggle.focus();
+  }
 });
 
 window.addEventListener("popstate", () => loadRepo(repoFromUrl(), false));
