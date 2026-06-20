@@ -1,12 +1,12 @@
 :root {
   color-scheme: dark;
   --bg: #050607;
-  --surface: rgba(5, 7, 7, 0.72);
-  --line: rgba(244, 255, 249, 0.15);
-  --line-strong: rgba(244, 255, 249, 0.28);
-  --text: #f4fff9;
-  --muted: rgba(244, 255, 249, 0.66);
-  --soft: rgba(244, 255, 249, 0.42);
+  --ink: #f4fff9;
+  --muted: rgba(244, 255, 249, 0.62);
+  --soft: rgba(244, 255, 249, 0.36);
+  --hair: rgba(244, 255, 249, 0.13);
+  --hair-strong: rgba(244, 255, 249, 0.26);
+  --veil: rgba(5, 7, 7, 0.72);
   --accent-a: #35f2b7;
   --accent-b: #58c4ff;
   --accent-c: #ff4d6d;
@@ -30,7 +30,7 @@ body {
   margin: 0;
   overflow: hidden;
   background: var(--bg);
-  color: var(--text);
+  color: var(--ink);
 }
 
 button,
@@ -41,26 +41,22 @@ input {
 button {
   min-height: 34px;
   border: 0;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid transparent;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
-  letter-spacing: 0.01em;
+  letter-spacing: 0;
   transition:
     color 140ms ease,
     border-color 140ms ease,
-    transform 140ms ease;
+    opacity 140ms ease;
 }
 
 button:hover,
 button:focus-visible {
-  color: var(--text);
+  color: var(--ink);
   border-color: var(--accent-a);
   outline: 0;
-}
-
-button:active {
-  transform: translateY(1px);
 }
 
 #terrarium {
@@ -75,8 +71,7 @@ button:active {
 
 .topbar,
 .readout,
-.stats,
-.dna-readout,
+.inspector,
 .examples,
 .controls,
 .credit {
@@ -89,11 +84,20 @@ button:active {
   left: 0;
   right: 0;
   display: grid;
-  grid-template-columns: minmax(280px, 560px) 1fr;
-  min-height: 68px;
-  border-bottom: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(5, 7, 7, 0.82), rgba(5, 7, 7, 0.44));
-  backdrop-filter: blur(18px);
+  grid-template-columns: 180px minmax(300px, 560px) 1fr;
+  align-items: center;
+  min-height: 64px;
+  border-bottom: 1px solid var(--hair);
+  background: linear-gradient(180deg, rgba(5, 7, 7, 0.9), rgba(5, 7, 7, 0.42));
+  backdrop-filter: blur(22px);
+}
+
+.brand {
+  padding-left: 22px;
+  color: var(--ink);
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
 }
 
 .repo-form {
@@ -101,14 +105,16 @@ button:active {
   grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 14px;
   align-items: center;
-  padding: 0 22px;
-  border-right: 1px solid var(--line);
+  height: 100%;
+  padding: 0 18px;
+  border-left: 1px solid var(--hair);
+  border-right: 1px solid var(--hair);
 }
 
 .repo-form label {
   color: var(--soft);
-  font-size: 0.74rem;
-  letter-spacing: 0.11em;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -120,8 +126,8 @@ button:active {
   outline: 0;
   padding: 9px 0;
   background: transparent;
-  color: var(--text);
-  font-size: 1.02rem;
+  color: var(--ink);
+  font-size: 1rem;
 }
 
 .repo-form input::placeholder {
@@ -129,7 +135,6 @@ button:active {
 }
 
 .repo-form button {
-  min-width: 58px;
   color: var(--accent-a);
 }
 
@@ -140,7 +145,7 @@ button:active {
   gap: 18px;
   padding: 0 22px;
   color: var(--muted);
-  font-size: 0.86rem;
+  font-size: 0.84rem;
   white-space: nowrap;
 }
 
@@ -157,133 +162,166 @@ button:active {
 }
 
 .signal code {
-  color: var(--text);
-  font-size: 0.82rem;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.78rem;
 }
 
 .readout {
-  top: 128px;
-  left: 0;
-  width: min(560px, calc(100vw - 40px));
-  padding: 0 34px 0 22px;
-  border-left: 2px solid var(--accent-a);
+  left: 22px;
+  bottom: 96px;
+  width: min(520px, calc(100vw - 44px));
+  padding-left: 16px;
+  border-left: 1px solid var(--hair-strong);
 }
 
 .kicker {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   color: var(--accent-a);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
 h1 {
+  max-width: 10ch;
   margin: 0;
-  font-size: clamp(1.55rem, 4vw, 3rem);
-  line-height: 0.98;
+  font-size: clamp(2rem, 5.8vw, 4.8rem);
+  font-weight: 720;
+  line-height: 0.9;
   letter-spacing: 0;
 }
 
 #repo-subtitle {
-  max-width: 62ch;
-  margin: 14px 0 0;
+  max-width: 54ch;
+  margin: 15px 0 0;
   color: var(--muted);
-  line-height: 1.5;
-}
-
-.languages {
-  display: grid;
-  gap: 7px;
-  width: min(420px, 100%);
-  padding: 18px 0 0;
-  margin: 0;
-  list-style: none;
-}
-
-.languages li {
-  display: grid;
-  grid-template-columns: 8px minmax(0, 1fr) auto;
-  gap: 10px;
-  align-items: center;
-  min-width: 0;
-  color: var(--muted);
-  font-size: 0.9rem;
-}
-
-.languages li::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  background: var(--swatch);
-  box-shadow: 0 0 16px var(--swatch);
-}
-
-.languages span {
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.languages strong {
-  color: var(--text);
-  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .stats {
-  top: 112px;
-  right: 0;
-  width: min(260px, 32vw);
-  border-left: 1px solid var(--line);
-  background: linear-gradient(90deg, rgba(5, 7, 7, 0.52), rgba(5, 7, 7, 0.12));
-  backdrop-filter: blur(10px);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px 18px;
+  width: min(440px, 100%);
+  margin-top: 18px;
 }
 
-.dna-readout {
-  top: 560px;
-  right: 0;
-  width: min(360px, 32vw);
-  max-height: calc(100vh - 644px);
-  min-height: 180px;
-  padding: 16px 22px 16px 18px;
-  border-top: 1px solid var(--line);
-  border-left: 1px solid var(--line);
-  background: linear-gradient(90deg, rgba(5, 7, 7, 0.48), rgba(5, 7, 7, 0.1));
-  backdrop-filter: blur(10px);
-  overflow: hidden;
-}
-
-.dna-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  align-items: baseline;
+.stats span {
+  display: grid;
+  gap: 2px;
+  padding-top: 9px;
+  border-top: 1px solid var(--hair);
   color: var(--soft);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
-.dna-head strong {
-  color: var(--text);
-  font-size: 0.76rem;
+.stats b {
+  color: var(--ink);
+  font-size: 1.08rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.inspector {
+  top: 86px;
+  right: 0;
+  width: min(410px, calc(100vw - 32px));
+  max-height: calc(100vh - 172px);
+  border-left: 1px solid var(--hair);
+  background: linear-gradient(90deg, rgba(5, 7, 7, 0.86), rgba(5, 7, 7, 0.64));
+  backdrop-filter: blur(24px);
+  transform: translateX(calc(100% - 52px));
+  transition:
+    transform 220ms ease,
+    border-color 220ms ease;
+  overflow: hidden;
+}
+
+.inspector:hover,
+.inspector:focus-within {
+  border-color: var(--hair-strong);
+  transform: translateX(0);
+}
+
+.inspector-tab {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  width: 52px;
+  height: 100%;
+  border-right: 1px solid var(--hair);
+  color: var(--soft);
+  font-size: 0.66rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.inspector-tab span,
+.inspector-tab strong {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.inspector-tab strong {
+  color: var(--ink);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.inspector-body {
+  display: grid;
+  gap: 22px;
+  max-height: calc(100vh - 172px);
+  padding: 18px 22px 22px 74px;
+  overflow: auto;
+}
+
+.inspector-section {
+  display: grid;
+  gap: 12px;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: baseline;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--hair);
+  color: var(--soft);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.section-head small {
+  color: var(--soft);
+  font-size: 0.65rem;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .dna-sequence {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 7px;
-  margin-top: 13px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 0.72rem;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .codon {
   display: inline-grid;
   grid-template-columns: repeat(3, auto);
   gap: 1px;
-  color: var(--soft);
 }
 
 .codon i {
@@ -293,22 +331,24 @@ h1 {
   text-align: center;
 }
 
-.genes {
+.genes,
+.languages {
   display: grid;
   gap: 8px;
-  padding: 14px 0 0;
+  padding: 0;
   margin: 0;
   list-style: none;
 }
 
-.genes li {
+.genes li,
+.languages li {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 34px;
+  grid-template-columns: minmax(0, 1fr) 38px;
   gap: 12px;
   align-items: center;
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   overflow: hidden;
 }
 
@@ -320,134 +360,193 @@ h1 {
   width: var(--gene-percent);
   height: 1px;
   background: var(--gene-color);
-  box-shadow: 0 0 12px var(--gene-color);
 }
 
-.genes span {
+.languages li {
+  grid-template-columns: 8px minmax(0, 1fr) 38px;
+}
+
+.languages li::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--swatch);
+}
+
+.genes span,
+.languages span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.genes b {
-  color: var(--text);
-  font-weight: 500;
+.genes b,
+.languages strong {
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 520;
   text-align: right;
-}
-
-.stats span {
-  display: grid;
-  gap: 4px;
-  padding: 15px 22px 14px 18px;
-  border-bottom: 1px solid var(--line);
-  color: var(--soft);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.stats b {
-  color: var(--text);
-  font-size: 1.32rem;
-  font-weight: 600;
-  letter-spacing: 0;
-  text-transform: none;
 }
 
 .examples {
   left: 22px;
-  bottom: 72px;
+  top: 86px;
   display: flex;
-  flex-wrap: wrap;
   gap: 18px;
-  max-width: calc(100vw - 44px);
 }
 
 .examples button {
-  min-height: 30px;
+  min-height: 28px;
   padding: 0;
-  font-size: 0.84rem;
+  color: var(--soft);
+  font-size: 0.82rem;
 }
 
 .controls {
-  left: 0;
-  right: 0;
-  bottom: 0;
+  left: 50%;
+  bottom: 18px;
   display: flex;
-  justify-content: center;
-  gap: 26px;
-  min-height: 54px;
-  border-top: 1px solid var(--line);
-  background: linear-gradient(0deg, rgba(5, 7, 7, 0.82), rgba(5, 7, 7, 0.34));
+  gap: 18px;
+  padding: 0 18px;
+  border: 1px solid var(--hair);
+  background: rgba(5, 7, 7, 0.58);
   backdrop-filter: blur(18px);
+  transform: translateX(-50%);
 }
 
 .controls button {
-  min-width: 70px;
+  min-width: 58px;
   padding: 0;
-  border-bottom-color: transparent;
 }
 
 .credit {
   right: 22px;
-  bottom: 70px;
+  bottom: 24px;
   color: var(--soft);
-  font-size: 0.82rem;
-  text-decoration: none;
+  font-size: 0.78rem;
 }
 
-.credit:hover {
-  color: var(--text);
-}
-
-@media (max-width: 860px) {
+@media (max-width: 900px) {
   html,
   body {
-    overflow: auto;
+    overflow: hidden;
   }
 
   .topbar {
     grid-template-columns: 1fr;
+    min-height: 104px;
+  }
+
+  .brand {
+    display: none;
   }
 
   .repo-form {
+    border-left: 0;
     border-right: 0;
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid var(--hair);
+    padding: 0 14px;
   }
 
   .signal {
     justify-content: space-between;
-    min-height: 44px;
-  }
-
-  .readout {
-    top: 150px;
-    width: calc(100vw - 18px);
-  }
-
-  .stats {
-    top: auto;
-    right: 0;
-    bottom: 118px;
-    left: 0;
-    width: auto;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    border-top: 1px solid var(--line);
-    border-left: 0;
-  }
-
-  .dna-readout {
-    display: none;
-  }
-
-  .stats span {
-    padding: 10px 14px;
-    border-right: 1px solid var(--line);
+    min-height: 40px;
+    padding: 0 14px;
   }
 
   .examples {
-    bottom: 70px;
+    top: 118px;
+    left: 14px;
+    gap: 14px;
+  }
+
+  .readout {
+    left: 14px;
+    right: 14px;
+    bottom: 126px;
+    width: auto;
+    padding-left: 12px;
+  }
+
+  h1 {
+    max-width: 11ch;
+    font-size: clamp(1.75rem, 9vw, 3rem);
+  }
+
+  #repo-subtitle {
+    max-width: 36ch;
+    font-size: 0.92rem;
+  }
+
+  .stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    width: min(100%, 390px);
+  }
+
+  .stats span {
+    font-size: 0.62rem;
+  }
+
+  .stats b {
+    font-size: 0.98rem;
+  }
+
+  .inspector {
+    top: auto;
+    right: 0;
+    bottom: 66px;
+    width: 100vw;
+    max-height: 46vh;
+    border-top: 1px solid var(--hair);
+    border-left: 0;
+    transform: translateY(calc(100% - 44px));
+  }
+
+  .inspector:hover,
+  .inspector:focus-within {
+    transform: translateY(0);
+  }
+
+  .inspector-tab {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    height: 44px;
+    padding: 0 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--hair);
+  }
+
+  .inspector-tab span,
+  .inspector-tab strong {
+    writing-mode: initial;
+    transform: none;
+  }
+
+  .inspector-body {
+    max-height: calc(46vh - 44px);
+    padding: 14px;
+  }
+
+  .controls {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    justify-content: space-between;
+    gap: 4px;
+    padding: 0 10px;
+    border-right: 0;
+    border-bottom: 0;
+    border-left: 0;
+    transform: none;
+  }
+
+  .controls button {
+    flex: 1 1 0;
+    min-width: 0;
+    font-size: 0.84rem;
   }
 
   .credit {
@@ -455,61 +554,21 @@ h1 {
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 520px) {
   .repo-form {
     grid-template-columns: 1fr auto;
-    padding: 0 14px;
   }
 
   .repo-form label {
     display: none;
   }
 
-  .signal {
-    padding: 0 14px;
-  }
-
-  .readout {
-    top: 142px;
-    padding-right: 16px;
-    padding-left: 14px;
-  }
-
-  h1 {
-    font-size: 1.55rem;
-  }
-
-  #repo-subtitle {
-    font-size: 0.92rem;
+  .examples {
+    max-width: calc(100vw - 28px);
+    overflow: hidden;
   }
 
   .stats {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .stats span {
-    padding: 8px 12px;
-  }
-
-  .stats b {
-    font-size: 1.05rem;
-  }
-
-  .examples {
-    left: 14px;
-    gap: 14px;
-  }
-
-  .controls {
-    justify-content: flex-start;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 0 14px;
-  }
-
-  .controls button {
-    flex: 1 0 0;
-    min-width: 46px;
-    font-size: 0.86rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
