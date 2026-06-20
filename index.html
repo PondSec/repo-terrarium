@@ -102,6 +102,37 @@
       <span>T</span>
     </section>
 
+    <button
+      id="life-toggle"
+      class="life-toggle"
+      type="button"
+      aria-controls="life-lab"
+      aria-expanded="false"
+      title="Open Life Lab"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <section id="life-lab" class="life-lab" aria-hidden="true" aria-label="Repository Life Lab">
+      <div class="life-lab-head">
+        <div>
+          <p>Life Lab</p>
+          <h2>Repo cellular automata</h2>
+        </div>
+        <div class="life-lab-actions">
+          <button id="life-reset" type="button">reset</button>
+          <button id="life-close" type="button" aria-label="Close Life Lab">close</button>
+        </div>
+      </div>
+      <canvas id="life-canvas" aria-label="Repo-driven cellular automata"></canvas>
+      <p class="life-lab-note">
+        A repo-shaped Game of Life: DNA, file count, language mix and mutation rate alter the rules.
+      </p>
+    </section>
+
     <footer class="controls" aria-label="Terrarium controls">
       <button id="pause-button" type="button">pause</button>
       <button id="shuffle-button" type="button">pulse</button>
