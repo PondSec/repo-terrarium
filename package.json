@@ -1,0 +1,21 @@
+{
+  "name": "repo-terrarium",
+  "version": "0.1.0",
+  "description": "Turn any GitHub repository into a living procedural ecosystem.",
+  "type": "module",
+  "private": false,
+  "author": "Joshua Pond",
+  "license": "MIT",
+  "homepage": "https://pondsec.github.io/repo-terrarium/",
+  "scripts": {
+    "start": "python3 -m http.server 4173",
+    "test": "node tests/genome.test.mjs"
+  },
+  "keywords": [
+    "github",
+    "canvas",
+    "generative-art",
+    "procedural",
+    "visualization"
+  ]
+}

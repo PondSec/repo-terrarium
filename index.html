@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Repo Terrarium</title>
+    <meta
+      name="description"
+      content="Turn any GitHub repository into a living procedural ecosystem. Built by Joshua Pond."
+    >
+    <meta property="og:title" content="Repo Terrarium">
+    <meta
+      property="og:description"
+      content="Every GitHub repo grows into a deterministic little ecosystem."
+    >
+    <meta name="theme-color" content="#080a0b">
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <canvas id="terrarium" aria-label="Living repository terrarium"></canvas>
+
+    <header class="topbar" aria-label="Repository loader">
+      <form id="repo-form" class="repo-form">
+        <label for="repo-input">GitHub repo</label>
+        <input
+          id="repo-input"
+          name="repo"
+          autocomplete="off"
+          spellcheck="false"
+          placeholder="owner/repo"
+        >
+        <button type="submit">grow</button>
+      </form>
+      <div class="signal">
+        <span id="status-text" data-tone="plain">warming the glass</span>
+        <code id="dna">RT-0000</code>
+      </div>
+    </header>
+
+    <main class="readout" aria-live="polite">
+      <p class="kicker">repo terrarium</p>
+      <h1 id="repo-title">PondSec/repo-terrarium</h1>
+      <p id="repo-subtitle">Reading the repository shape...</p>
+      <ul id="languages" class="languages" aria-label="Top languages"></ul>
+    </main>
+
+    <section id="stats" class="stats" aria-label="Repository stats"></section>
+
+    <aside class="examples" aria-label="Example repositories">
+      <button type="button" data-repo="torvalds/linux">linux</button>
+      <button type="button" data-repo="rust-lang/rust">rust</button>
+      <button type="button" data-repo="vercel/next.js">next</button>
+      <button type="button" data-repo="sveltejs/svelte">svelte</button>
+    </aside>
+
+    <footer class="controls" aria-label="Terrarium controls">
+      <button id="pause-button" type="button">pause</button>
+      <button id="shuffle-button" type="button">pulse</button>
+      <button id="sound-button" type="button">sound</button>
+      <button id="snapshot-button" type="button">snapshot</button>
+      <button id="share-button" type="button">share</button>
+    </footer>
+
+    <a class="credit" href="https://github.com/PondSec/repo-terrarium">Joshua Pond</a>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+Subreddit:
+r/SideProject
+
+Title:
+I made a tiny universe where every GitHub repo grows into its own living terrarium
+
+Post:
+I built a small browser project called Repo Terrarium.
+
+You paste any public GitHub repo, like rust-lang/rust or vercel/next.js, and it turns the repo structure into a living canvas ecosystem. The file tree, language mix, stars, forks and repo name get hashed into a deterministic "DNA", so the same repo always grows the same terrarium. Forks mutate it.
+
+It is just static HTML/CSS/JS:
+- no backend
+- no login
+- no database
+- no build step
+
+Demo:
+https://pondsec.github.io/repo-terrarium/
+
+GitHub:
+https://github.com/PondSec/repo-terrarium
+
+The fun part is comparing repos. Big framework repos look totally different from tiny personal projects, and you can save a snapshot PNG.
+
+Would love to see what weird repos produce the best terrariums.
+
+Small note:
+If the GitHub API rate-limits the page, it falls back to an offline seed so the demo still works.
