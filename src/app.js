@@ -8,6 +8,9 @@ const statusText = document.querySelector("#status-text");
 const title = document.querySelector("#repo-title");
 const subtitle = document.querySelector("#repo-subtitle");
 const dna = document.querySelector("#dna");
+const dnaSequence = document.querySelector("#dna-sequence");
+const geneList = document.querySelector("#genes");
+const gcReadout = document.querySelector("#gc-readout");
 const stats = document.querySelector("#stats");
 const languages = document.querySelector("#languages");
 const examples = document.querySelectorAll("[data-repo]");
@@ -16,6 +19,7 @@ const shuffleButton = document.querySelector("#shuffle-button");
 const shareButton = document.querySelector("#share-button");
 const snapshotButton = document.querySelector("#snapshot-button");
 const soundButton = document.querySelector("#sound-button");
+const forkButton = document.querySelector("#fork-button");
 
 const terrarium = new Terrarium(canvas);
 let activeGenome = null;
@@ -113,11 +117,11 @@ function renderLanguages(genome) {
 function renderStats(genome) {
   const statItems = [
     ["files", genome.files.toLocaleString()],
-    ["folders", genome.directories.toLocaleString()],
-    ["entropy", genome.entropy.toFixed(2)],
-    ["stars", genome.stars.toLocaleString()],
-    ["forks", genome.forks.toLocaleString()],
-    ["heat", Math.round(genome.traits.heat * 100)]
+    ["bases", genome.digitalDna.length.toLocaleString()],
+    ["GC", `${genome.digitalDna.gcPercent}%`],
+    ["species", genome.languages.length.toLocaleString()],
+    ["mutation", `${Math.round(genome.traits.mutationRate * 100)}%`],
+    ["birth", `${Math.round(genome.traits.replication * 100)}%`]
   ];
 
   stats.innerHTML = "";
@@ -125,6 +129,35 @@ function renderStats(genome) {
     const item = document.createElement("span");
     item.innerHTML = `<b>${value}</b>${label}`;
     stats.append(item);
+  }
+}
+
+function renderDna(genome) {
+  const dnaModel = genome.digitalDna;
+  const sequence = dnaModel.sequence.slice(0, 144);
+  dnaSequence.innerHTML = "";
+  gcReadout.textContent = `GC ${dnaModel.gcPercent}%`;
+
+  for (let index = 0; index < sequence.length; index += 3) {
+    const codon = sequence.slice(index, index + 3);
+    const group = document.createElement("span");
+    group.className = "codon";
+    for (const base of codon) {
+      const item = document.createElement("i");
+      item.textContent = base;
+      item.style.setProperty("--base-color", dnaModel.baseCounts[base] ? `var(--base-${base.toLowerCase()})` : "#ffffff");
+      group.append(item);
+    }
+    dnaSequence.append(group);
+  }
+
+  geneList.innerHTML = "";
+  for (const gene of dnaModel.genes) {
+    const item = document.createElement("li");
+    item.style.setProperty("--gene-percent", `${Math.round(gene.expression * 100)}%`);
+    item.style.setProperty("--gene-color", `var(--base-${gene.leadCodon[0].toLowerCase()})`);
+    item.innerHTML = `<span>${gene.name}</span><b>${Math.round(gene.expression * 100)}</b>`;
+    geneList.append(item);
   }
 }
 
@@ -139,6 +172,7 @@ function renderGenome(genome, source = "live") {
   document.documentElement.style.setProperty("--accent-c", genome.palette[2]);
   renderStats(genome);
   renderLanguages(genome);
+  renderDna(genome);
   terrarium.setGenome(genome);
   sonifier?.setGenome(genome);
   setStatus(source === "offline" ? "offline seed, still alive" : "live GitHub genome", source === "offline" ? "warn" : "good");
@@ -281,6 +315,13 @@ soundButton.addEventListener("click", async () => {
   sonifier ||= new Sonifier();
   const running = await sonifier.toggle(activeGenome);
   soundButton.textContent = running ? "mute" : "sound";
+});
+
+forkButton.addEventListener("click", () => {
+  if (!activeGenome) {
+    return;
+  }
+  window.open(`https://github.com/${activeGenome.repo}/fork`, "_blank", "noopener");
 });
 
 window.addEventListener("popstate", () => loadRepo(repoFromUrl(), false));

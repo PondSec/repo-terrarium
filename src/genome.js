@@ -1,3 +1,5 @@
+import { buildDigitalDna } from "./dna.js";
+
 export const DEFAULT_REPO = "PondSec/repo-terrarium";
 
 const LANGUAGE_RULES = [
@@ -308,6 +310,14 @@ export function buildGenome({ repo = DEFAULT_REPO, metadata = {}, tree = [] } = 
 
   const topLanguage = languageList[0] || { name: "Other", color: "#ffffff", count: files.length, ratio: 1 };
   const lineage = `${pick(ADJECTIVES, rng)} ${pick(NOUNS, rng)}`;
+  const digitalDna = buildDigitalDna({
+    signature,
+    files,
+    entropy,
+    languages: languageList
+  });
+  const phenotype = digitalDna.phenotype;
+  const shapedPopulation = Math.round(population * (0.82 + phenotype.replication * 0.34));
 
   return {
     repo: normalizedRepo,
@@ -323,20 +333,27 @@ export function buildGenome({ repo = DEFAULT_REPO, metadata = {}, tree = [] } = 
     entropy: Number(entropy.toFixed(3)),
     seed: seedParts[0],
     seedHex,
-    dna: `RT-${seedHex.slice(0, 4)}-${files.length.toString(36)}-${topLanguage.name.replace(/[^A-Za-z0-9]/g, "").slice(0, 4).toUpperCase()}`,
+    dna: `DNA-${seedHex.slice(0, 4)}-${digitalDna.gcPercent}-${digitalDna.dominantCodons[0]?.triplet || "ATG"}`,
+    digitalDna,
     lineage,
     topLanguage,
     languages: languageList,
     palette,
     paths: paths.slice(0, 420),
     traits: {
-      population,
+      population: shapedPopulation,
       heat: Number(heat.toFixed(3)),
       pulse: Number(pulse.toFixed(3)),
       branching: Number(clamp(0.24 + entropy / 5 + directoryFactor * 0.24 + rng() * 0.2, 0.18, 0.96).toFixed(3)),
       orbit: Number(clamp(0.22 + fileFactor * 0.48 + rng() * 0.18, 0.16, 0.92).toFixed(3)),
       turbulence: Number(clamp(0.15 + heat * 0.55 + rng() * 0.2, 0.1, 0.92).toFixed(3)),
-      bloom: Number(clamp(0.2 + languageFactor * 0.55 + rng() * 0.2, 0.18, 0.98).toFixed(3))
+      bloom: Number(clamp(0.2 + languageFactor * 0.55 + phenotype.photosynthesis * 0.2 + rng() * 0.12, 0.18, 0.98).toFixed(3)),
+      mutationRate: Number(clamp(0.015 + phenotype.mutation * 0.16 + Math.log1p(forks) / 80, 0.015, 0.24).toFixed(3)),
+      metabolism: Number(clamp(0.12 + phenotype.metabolism * 0.72, 0.12, 0.94).toFixed(3)),
+      replication: Number(clamp(0.08 + phenotype.replication * 0.78, 0.08, 0.92).toFixed(3)),
+      adhesion: Number(clamp(0.08 + phenotype.adhesion * 0.78, 0.08, 0.92).toFixed(3)),
+      perception: Number(clamp(0.1 + phenotype.perception * 0.76, 0.1, 0.94).toFixed(3)),
+      longevity: Number(clamp(0.2 + phenotype.longevity * 0.7, 0.2, 0.98).toFixed(3))
     }
   };
 }
@@ -347,5 +364,5 @@ export function genomeSummary(genome) {
     .map((language) => `${language.name} ${Math.round(language.ratio * 100)}%`)
     .join(" / ");
 
-  return `${genome.displayName} grows as ${genome.lineage}: ${genome.files} files, ${genome.directories} folders, ${languages}.`;
+  return `${genome.displayName} grows as ${genome.lineage}: ${genome.files} files, ${genome.directories} folders, ${genome.digitalDna.length} bases, ${languages}.`;
 }

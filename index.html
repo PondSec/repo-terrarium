@@ -47,6 +47,15 @@
 
     <section id="stats" class="stats" aria-label="Repository stats"></section>
 
+    <section class="dna-readout" aria-label="Digital DNA">
+      <div class="dna-head">
+        <span>DNA strand</span>
+        <strong id="gc-readout">GC 0%</strong>
+      </div>
+      <div id="dna-sequence" class="dna-sequence" aria-label="Visible DNA sequence"></div>
+      <ol id="genes" class="genes" aria-label="Gene expression"></ol>
+    </section>
+
     <aside class="examples" aria-label="Example repositories">
       <button type="button" data-repo="torvalds/linux">linux</button>
       <button type="button" data-repo="rust-lang/rust">rust</button>
@@ -60,6 +69,7 @@
       <button id="sound-button" type="button">sound</button>
       <button id="snapshot-button" type="button">snapshot</button>
       <button id="share-button" type="button">share</button>
+      <button id="fork-button" type="button">fork</button>
     </footer>
 
     <a class="credit" href="https://github.com/PondSec/repo-terrarium">Joshua Pond</a>
