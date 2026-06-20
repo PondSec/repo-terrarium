@@ -2,22 +2,19 @@ Subreddit:
 r/SideProject
 
 Title:
-I made a browser terrarium where every GitHub repo gets its own visible DNA
+I made a WebGL terrarium where every GitHub repo gets its own DNA
 
 Post:
-I built a small browser project called Repo Terrarium.
+I built a small project called Repo Terrarium.
 
-You paste any public GitHub repo, like rust-lang/rust or vercel/next.js, and it turns the repo structure into a living canvas terrarium.
+You paste a public GitHub repo, and it turns the repo into a living WebGL specimen with its own visible DNA helix.
 
-The file tree, language mix, stars, forks and repo name get turned into a deterministic A/C/G/T sequence. The app reads that sequence as codons, calculates genes like motility, metabolism, replication, mutation, perception and longevity, then grows organisms from it.
+It reads the repo structure, turns paths/languages/files into an A/C/G/T sequence, reads that sequence as codons, then calculates genes like motility, metabolism, replication, mutation and longevity.
 
-The same repo always grows the same terrarium. A fork becomes a different genome, so changing the fork actually changes the little life system. I also added a fork button so the loop is: open repo -> fork it -> change files -> reload fork -> compare DNA.
+The part I like most: forks become mutations.
 
-It is just static HTML/CSS/JS:
-- no backend
-- no login
-- no database
-- no build step
+Same repo = same organism.
+Changed fork = different DNA.
 
 Demo:
 https://pondsec.github.io/repo-terrarium/
@@ -25,9 +22,9 @@ https://pondsec.github.io/repo-terrarium/
 GitHub:
 https://github.com/PondSec/repo-terrarium
 
-The fun part is comparing repos and forks. Big framework repos look totally different from tiny personal projects, and you can save a snapshot PNG.
+No backend, no login, no build step. Just static HTML/CSS/JS with Three.js.
 
-Would love to see what weird repos produce the strangest DNA.
+Try dropping a weird repo into it. I am curious which repos grow the strangest specimens.
 
 Small note:
-If the GitHub API rate-limits the page, it falls back to an offline seed so the demo still works.
+GitHub can rate-limit public API calls. If that happens, the app falls back to an offline deterministic genome from the repo name so the page still works.
