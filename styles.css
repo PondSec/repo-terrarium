@@ -305,6 +305,131 @@ h1 {
   color: var(--base-t);
 }
 
+.life-toggle {
+  right: 32px;
+  bottom: 140px;
+  display: grid;
+  grid-template-columns: repeat(2, 8px);
+  grid-template-rows: repeat(2, 8px);
+  gap: 5px;
+  width: 42px;
+  min-height: 42px;
+  place-content: center;
+  border: 1px solid var(--hair);
+  border-radius: 12px;
+  background: rgba(5, 8, 8, 0.46);
+  backdrop-filter: blur(14px);
+}
+
+.life-toggle span {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--soft);
+}
+
+.life-toggle span:nth-child(1) {
+  background: var(--base-a);
+}
+
+.life-toggle span:nth-child(2) {
+  background: var(--base-c);
+}
+
+.life-toggle span:nth-child(3) {
+  background: var(--base-g);
+}
+
+.life-toggle span:nth-child(4) {
+  background: var(--base-t);
+}
+
+.life-toggle:hover,
+.life-toggle:focus-visible,
+.life-toggle[aria-expanded="true"] {
+  border-color: var(--hair-strong);
+  background: rgba(247, 255, 251, 0.08);
+}
+
+.life-lab {
+  position: fixed;
+  inset: 18px;
+  z-index: 4;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border: 1px solid var(--hair-strong);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(53, 242, 183, 0.08), transparent 44%),
+    rgba(3, 5, 5, 0.94);
+  box-shadow: 0 40px 160px rgba(0, 0, 0, 0.62);
+  backdrop-filter: blur(30px) saturate(140%);
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.985);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  overflow: hidden;
+}
+
+.life-lab.is-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+}
+
+.life-lab-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--hair);
+}
+
+.life-lab-head p,
+.life-lab-note {
+  margin: 0;
+  color: var(--soft);
+  font-size: 0.68rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.life-lab-head h2 {
+  margin: 3px 0 0;
+  color: var(--ink);
+  font-size: clamp(1.35rem, 3vw, 2.5rem);
+  line-height: 1;
+}
+
+.life-lab-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.life-lab-actions button {
+  min-width: 74px;
+  min-height: 38px;
+  border: 1px solid var(--hair);
+  border-radius: 999px;
+}
+
+#life-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.life-lab-note {
+  padding: 14px 22px 18px;
+  border-top: 1px solid var(--hair);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 .controls {
   left: 50%;
   bottom: 22px;
@@ -586,6 +711,7 @@ h1 {
   }
 
   .dna-legend,
+  .life-toggle,
   .credit {
     display: none;
   }
@@ -620,6 +746,19 @@ h1 {
 
   .inspector-body {
     max-height: calc(min(68vh, 620px) - 68px);
+  }
+
+  .life-lab {
+    inset: 10px;
+    border-radius: 18px;
+  }
+
+  .life-lab-head {
+    padding: 14px;
+  }
+
+  .life-lab-actions button {
+    min-width: 64px;
   }
 }
 
