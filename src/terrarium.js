@@ -288,7 +288,7 @@ export class Terrarium {
   buildOrganisms() {
     const population = Math.round(this.genome.traits.population * (this.width < 760 ? 0.14 : 0.22));
     const paths = this.genome.paths.length ? this.genome.paths : [this.genome.repo];
-    const geometry = new THREE.SphereGeometry(0.34, 36, 22);
+    const geometry = new THREE.SphereGeometry(0.22, 48, 32);
 
     for (let index = 0; index < population; index += 1) {
       const path = paths[index % paths.length];
@@ -296,26 +296,18 @@ export class Terrarium {
       const digest = hashString(`${this.genome.seedHex}:${path}:${index}`);
       const base = this.genome.digitalDna.sequence[digest % this.genome.digitalDna.sequence.length] || BASES[digest % 4];
       const organismColor = color(language?.color || colorFromString(path));
-      const material = new THREE.MeshPhysicalMaterial({
+      const material = new THREE.MeshBasicMaterial({
         color: organismColor,
-        emissive: color(base),
-        emissiveIntensity: 0.24,
-        roughness: 0.12,
-        metalness: 0.05,
-        transmission: 0.38,
-        thickness: 0.7,
         transparent: true,
-        opacity: 0.74
+        opacity: 0.58,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
       });
       const mesh = new THREE.Mesh(geometry, material);
       const radius = 0.75 + this.random() * 3.35;
       const angle = (digest % 10000) / 10000 * TAU;
-      mesh.position.set(Math.cos(angle) * radius, Math.sin(angle * 1.7) * 1.05, Math.sin(angle) * radius * 0.5);
-      mesh.scale.set(
-        0.72 + this.random() * 0.95 + this.genome.digitalDna.phenotype.adhesion * 0.32,
-        0.5 + this.random() * 0.62,
-        0.72 + this.random() * 0.95
-      );
+      mesh.position.set(Math.cos(angle) * radius, Math.sin(angle * 1.7) * 0.95, Math.sin(angle) * radius * 0.5);
+      mesh.scale.setScalar(0.72 + this.random() * 0.74 + this.genome.digitalDna.phenotype.adhesion * 0.22);
       mesh.userData = {
         path,
         base,
@@ -325,7 +317,7 @@ export class Terrarium {
         speed: 0.12 + this.genome.digitalDna.phenotype.motility * 0.36 + this.random() * 0.1,
         energy: 0.5 + this.random() * 0.5,
         phase: this.random() * TAU,
-        originalScale: mesh.scale.clone()
+        originalScale: mesh.scale.x
       };
       this.organisms.push(mesh);
       this.organismGroup.add(mesh);
@@ -427,11 +419,7 @@ export class Terrarium {
       }
       mesh.rotation.x += delta * (0.4 + data.speed);
       mesh.rotation.y += delta * (0.6 + data.speed);
-      mesh.scale.set(
-        data.originalScale.x * breathe,
-        data.originalScale.y * (0.96 + Math.sin(time * 1.2 + data.phase) * 0.05),
-        data.originalScale.z * breathe
-      );
+      mesh.scale.setScalar(data.originalScale * breathe);
     }
 
     if (this.nutrientPoints) {
