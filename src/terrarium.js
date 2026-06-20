@@ -37,7 +37,7 @@ export class Terrarium {
     this.entities = [];
     this.nutrients = [];
     this.pulses = [];
-    this.helixProfile = this.createHelixProfile(genome);
+    this.helixProfile = null;
     this.births = 0;
     this.deaths = 0;
     this.frame = 0;
@@ -96,6 +96,7 @@ export class Terrarium {
     this.entities = [];
     this.nutrients = [];
     this.pulses = [];
+    this.helixProfile = this.createHelixProfile(genome);
     this.births = 0;
     this.deaths = 0;
     this.frame = 0;
