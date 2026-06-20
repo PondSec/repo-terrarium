@@ -18,6 +18,8 @@ This is not a chart dressed up as art. The repo becomes a digital organism.
 - Codons produce gene expression values such as motility, metabolism, replication, mutation, perception, photosynthesis and longevity.
 - The scene is rendered with Three.js/WebGL.
 - The DNA helix is visible and repo-specific. Different repos produce different helix geometry.
+- Colony size and motion respond to repo shape. Larger and more diverse repositories grow denser, faster systems; smaller repos stay quieter.
+- Life Lab opens a repo-driven cellular automata mode inspired by Conway's Game of Life, but with DNA and repo metrics changing the rules.
 - Forks mutate the system because the owner/repo seed and file tree change.
 
 ## Use it
@@ -26,9 +28,10 @@ This is not a chart dressed up as art. The repo becomes a digital organism.
 2. Enter a public GitHub repo in `owner/repo` format.
 3. Press `grow`.
 4. Use `inspect` to open the DNA, gene and species details.
-5. Use `snapshot` to save a PNG.
-6. Use `share` to copy the current terrarium link.
-7. Use `fork` to open GitHub's fork flow and create a mutated lineage.
+5. Use the small rounded Life Lab icon to open the cellular automata layer.
+6. Use `snapshot` to save a PNG.
+7. Use `share` to copy the current terrarium link.
+8. Use `fork` to open GitHub's fork flow and create a mutated lineage.
 
 ## Controls
 
@@ -39,6 +42,21 @@ This is not a chart dressed up as art. The repo becomes a digital organism.
 - `share`: copy the current repo link.
 - `fork`: open the fork page for the current repo.
 - `inspect`: reveal DNA, genes, presets and language mix.
+- Life Lab icon: open a fullscreen repo-shaped cellular automata view.
+
+## Life Lab
+
+Life Lab is the deeper mode hidden behind the small rounded icon.
+
+It takes the same repo DNA and turns it into a cellular automata field:
+
+- File count influences density.
+- Language variety changes how alive the field feels.
+- GC ratio shifts survival behavior.
+- Mutation and replication genes change birth rules and tempo.
+- The pattern is deterministic for the repo, but it keeps evolving while open.
+
+It is not plain Conway. It is a repo-shaped variation where the repository changes the rules.
 
 ## Run locally
 
