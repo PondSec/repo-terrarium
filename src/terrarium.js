@@ -106,7 +106,10 @@ export class Terrarium {
     const paths = genome.paths.length ? genome.paths : [genome.repo];
     const shortest = Math.min(this.width, this.height);
 
-    for (let index = 0; index < Math.round(population * 0.72); index += 1) {
+    const populationScale = this.width < 760 ? 0.34 : 0.54;
+    const nutrientScale = this.width < 760 ? 0.46 : 0.68;
+
+    for (let index = 0; index < Math.round(population * populationScale); index += 1) {
       const path = paths[index % paths.length];
       const language = genome.languages[index % Math.max(1, genome.languages.length)];
       this.entities.push(this.createOrganism({
@@ -119,7 +122,7 @@ export class Terrarium {
       }));
     }
 
-    for (let index = 0; index < Math.max(90, Math.round(population * 0.9)); index += 1) {
+    for (let index = 0; index < Math.max(56, Math.round(population * nutrientScale)); index += 1) {
       this.spawnNutrient(paths[index % paths.length], true);
     }
   }
@@ -131,12 +134,12 @@ export class Terrarium {
     const gcBias = genome.digitalDna.gc - 0.5;
 
     return {
-      amplitude: 24 + random() * 34 + Math.abs(gcBias) * 28,
-      spacing: 7.5 + random() * 4.5,
+      amplitude: 20 + random() * 26 + Math.abs(gcBias) * 18,
+      spacing: 7.2 + random() * 3.4,
       twist: 0.26 + random() * 0.24 + dominantValue * 0.012,
       tilt: (random() - 0.5) * 0.42,
       drift: (random() - 0.5) * 18,
-      visibleBases: 42 + Math.floor(random() * 28),
+      visibleBases: 38 + Math.floor(random() * 22),
       startOffset: Math.floor(random() * genome.digitalDna.sequence.length),
       labelEvery: 8 + Math.floor(random() * 6)
     };
@@ -417,12 +420,12 @@ export class Terrarium {
     const profile = this.helixProfile;
     const sequence = dna.sequence;
     const compact = this.width < 760;
-    const visible = compact ? Math.min(36, profile.visibleBases) : profile.visibleBases;
-    const spacing = compact ? Math.min(8, profile.spacing) : profile.spacing;
+    const visible = compact ? Math.min(30, profile.visibleBases) : Math.min(50, profile.visibleBases);
+    const spacing = compact ? Math.min(7.2, profile.spacing) : profile.spacing;
     const height = visible * spacing;
-    const amplitude = compact ? Math.min(28, profile.amplitude * 0.68) : profile.amplitude;
-    const x = compact ? this.width - 78 : this.width - 210 + profile.drift;
-    const y = compact ? 132 : 94;
+    const amplitude = compact ? Math.min(19, profile.amplitude * 0.52) : Math.min(36, profile.amplitude * 0.72);
+    const x = compact ? this.width - 54 : this.width - 172 + profile.drift;
+    const y = compact ? 138 : 92;
     const start = (profile.startOffset + Math.floor(this.frame * (0.12 + this.genome.traits.mutationRate)) * 3) % Math.max(3, sequence.length - visible);
 
     ctx.save();
@@ -441,22 +444,22 @@ export class Terrarium {
       const rightX = -Math.sin(phase) * amplitude * waist;
       const front = Math.cos(phase) > 0;
 
-      ctx.globalAlpha = front ? 0.42 : 0.12;
+      ctx.globalAlpha = front ? 0.32 : 0.08;
       ctx.strokeStyle = BASE_COLORS[base];
       ctx.beginPath();
       ctx.moveTo(leftX, yy);
       ctx.lineTo(rightX, yy);
       ctx.stroke();
 
-      ctx.globalAlpha = front ? 0.82 : 0.26;
+      ctx.globalAlpha = front ? 0.66 : 0.2;
       ctx.fillStyle = BASE_COLORS[base];
       ctx.beginPath();
-      ctx.arc(leftX, yy, front ? 2.6 : 1.8, 0, TAU);
+      ctx.arc(leftX, yy, front ? 2.2 : 1.5, 0, TAU);
       ctx.fill();
 
       ctx.fillStyle = BASE_COLORS[pair];
       ctx.beginPath();
-      ctx.arc(rightX, yy, front ? 2.6 : 1.8, 0, TAU);
+      ctx.arc(rightX, yy, front ? 2.2 : 1.5, 0, TAU);
       ctx.fill();
 
       if (front && index % profile.labelEvery === 0 && this.width > 980) {
@@ -467,7 +470,7 @@ export class Terrarium {
       }
     }
 
-    ctx.globalAlpha = 0.2;
+    ctx.globalAlpha = compact ? 0.12 : 0.18;
     ctx.strokeStyle = "rgba(244, 255, 249, 0.7)";
     ctx.beginPath();
     for (let index = 0; index < visible; index += 1) {
@@ -491,7 +494,7 @@ export class Terrarium {
     }
     ctx.stroke();
 
-    ctx.globalAlpha = 0.16;
+    ctx.globalAlpha = compact ? 0.1 : 0.14;
     ctx.strokeStyle = "rgba(244, 255, 249, 0.28)";
     ctx.strokeRect(-amplitude - 15, -14, amplitude * 2 + 30, height + 24);
     ctx.restore();
@@ -503,7 +506,7 @@ export class Terrarium {
     ctx.globalCompositeOperation = "lighter";
     for (const nutrient of this.nutrients) {
       const pulse = 1 + Math.sin(this.frame * 0.04 + nutrient.phase) * 0.25;
-      ctx.globalAlpha = 0.42;
+      ctx.globalAlpha = 0.28;
       ctx.fillStyle = nutrient.color;
       ctx.fillRect(nutrient.x - 1.5 * pulse, nutrient.y - 1.5 * pulse, 3 * pulse, 3 * pulse);
     }
@@ -556,7 +559,7 @@ export class Terrarium {
       const energy = clamp(entity.energy / 120, 0.12, 1);
       const size = entity.size * (0.75 + energy * 0.45);
 
-      ctx.globalAlpha = 0.16 + Math.min(0.42, speed * 0.16);
+      ctx.globalAlpha = 0.1 + Math.min(0.3, speed * 0.12);
       ctx.strokeStyle = entity.color;
       ctx.lineWidth = Math.max(0.8, size * 0.24);
       ctx.beginPath();
@@ -564,20 +567,20 @@ export class Terrarium {
       ctx.lineTo(entity.x, entity.y);
       ctx.stroke();
 
-      ctx.globalAlpha = 0.48 + energy * 0.34;
+      ctx.globalAlpha = 0.34 + energy * 0.24;
       ctx.strokeStyle = entity.baseColor;
       ctx.lineWidth = 1.2;
       ctx.beginPath();
       ctx.ellipse(entity.x, entity.y, size * 1.25, size * 0.78, entity.angle, 0, TAU);
       ctx.stroke();
 
-      ctx.globalAlpha = 0.68;
+      ctx.globalAlpha = 0.46 + energy * 0.18;
       ctx.fillStyle = entity.color;
       ctx.beginPath();
       ctx.ellipse(entity.x, entity.y, size, size * 0.62, entity.angle, 0, TAU);
       ctx.fill();
 
-      ctx.globalAlpha = 0.78;
+      ctx.globalAlpha = 0.58;
       ctx.fillStyle = entity.baseColor;
       ctx.beginPath();
       ctx.arc(entity.x + Math.cos(entity.angle) * size * 0.22, entity.y + Math.sin(entity.angle) * size * 0.22, Math.max(1.2, size * 0.24), 0, TAU);
@@ -614,7 +617,7 @@ export class Terrarium {
     core.addColorStop(0, "rgba(244, 255, 249, 0.64)");
     core.addColorStop(0.26, genome.palette[0]);
     core.addColorStop(1, "rgba(0, 0, 0, 0)");
-    ctx.globalAlpha = 0.2 + genome.traits.pulse * 0.18;
+    ctx.globalAlpha = 0.12 + genome.traits.pulse * 0.12;
     ctx.fillStyle = core;
     ctx.beginPath();
     ctx.arc(cx, cy, baseRadius * (1 + Math.sin(this.frame * 0.025) * 0.06), 0, TAU);
