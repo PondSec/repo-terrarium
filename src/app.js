@@ -1,5 +1,6 @@
 import { DEFAULT_REPO, buildGenome, genomeSummary, normalizeRepo, seededRandom } from "./genome.js";
 import { Terrarium } from "./terrarium.js";
+import { LifeLab } from "./life-lab.js";
 
 const canvas = document.querySelector("#terrarium");
 const form = document.querySelector("#repo-form");
@@ -23,8 +24,14 @@ const forkButton = document.querySelector("#fork-button");
 const inspector = document.querySelector("#inspector");
 const inspectToggle = document.querySelector("#inspect-toggle");
 const inspectorClose = document.querySelector("#inspector-close");
+const lifeCanvas = document.querySelector("#life-canvas");
+const lifeLabPanel = document.querySelector("#life-lab");
+const lifeToggle = document.querySelector("#life-toggle");
+const lifeClose = document.querySelector("#life-close");
+const lifeReset = document.querySelector("#life-reset");
 
 const terrarium = new Terrarium(canvas);
+const lifeLab = new LifeLab(lifeCanvas);
 let activeGenome = null;
 let currentAbort = null;
 let sonifier = null;
@@ -38,6 +45,20 @@ function setInspector(open) {
   inspector.classList.toggle("is-open", open);
   inspector.setAttribute("aria-hidden", open ? "false" : "true");
   inspectToggle.setAttribute("aria-expanded", open ? "true" : "false");
+}
+
+function setLifeLab(open) {
+  lifeLabPanel.classList.toggle("is-open", open);
+  lifeLabPanel.setAttribute("aria-hidden", open ? "false" : "true");
+  lifeToggle.setAttribute("aria-expanded", open ? "true" : "false");
+  if (open) {
+    lifeLab.resize();
+    if (activeGenome) lifeLab.setGenome(activeGenome);
+    lifeLab.start();
+    lifeClose.focus();
+  } else {
+    lifeLab.stop();
+  }
 }
 
 function urlForRepo(repo) {
@@ -183,6 +204,7 @@ function renderGenome(genome, source = "live") {
   renderLanguages(genome);
   renderDna(genome);
   terrarium.setGenome(genome);
+  lifeLab.setGenome(genome);
   sonifier?.setGenome(genome);
   setStatus(source === "offline" ? "offline seed, still alive" : "live GitHub genome", source === "offline" ? "warn" : "good");
 }
@@ -348,9 +370,34 @@ inspectorClose.addEventListener("click", () => {
 });
 
 window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && lifeLabPanel.classList.contains("is-open")) {
+    setLifeLab(false);
+    lifeToggle.focus();
+    return;
+  }
   if (event.key === "Escape" && inspector.classList.contains("is-open")) {
     setInspector(false);
     inspectToggle.focus();
+  }
+});
+
+lifeToggle.addEventListener("click", () => {
+  setLifeLab(!lifeLabPanel.classList.contains("is-open"));
+});
+
+lifeClose.addEventListener("click", () => {
+  setLifeLab(false);
+  lifeToggle.focus();
+});
+
+lifeReset.addEventListener("click", () => {
+  lifeLab.reset();
+});
+
+window.addEventListener("resize", () => {
+  if (lifeLabPanel.classList.contains("is-open")) {
+    lifeLab.resize();
+    lifeLab.reset();
   }
 });
 
