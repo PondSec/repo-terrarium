@@ -286,7 +286,16 @@ export class Terrarium {
   }
 
   buildOrganisms() {
-    const population = Math.round(this.genome.traits.population * (this.width < 760 ? 0.14 : 0.22));
+    const fileFactor = clamp(Math.log10(this.genome.files + 1) / 4, 0.08, 1);
+    const languageFactor = clamp(this.genome.languages.length / 12, 0.08, 1);
+    const dnaFactor = 0.68 + this.genome.digitalDna.phenotype.replication * 0.42;
+    const screenFactor = this.width < 760 ? 0.42 : 0.72;
+    const population = Math.round(clamp(18 + this.genome.traits.population * fileFactor * dnaFactor * screenFactor, 18, this.width < 760 ? 84 : 168));
+    const motionScale = clamp(
+      0.46 + fileFactor * 0.44 + languageFactor * 0.28 + this.genome.digitalDna.phenotype.motility * 0.42,
+      0.42,
+      1.65
+    );
     const paths = this.genome.paths.length ? this.genome.paths : [this.genome.repo];
     const geometry = new THREE.SphereGeometry(0.22, 48, 32);
 
@@ -320,7 +329,7 @@ export class Terrarium {
         angle,
         radius,
         strand,
-        speed: 0.12 + this.genome.digitalDna.phenotype.motility * 0.36 + this.random() * 0.1,
+        speed: (0.08 + this.genome.digitalDna.phenotype.motility * 0.28 + this.random() * 0.08) * motionScale,
         energy: 0.5 + this.random() * 0.5,
         phase: this.random() * TAU,
         originalScale: mesh.scale.x
@@ -331,7 +340,8 @@ export class Terrarium {
   }
 
   buildNutrients() {
-    const count = Math.round(this.genome.traits.population * (this.width < 760 ? 0.3 : 0.5));
+    const fileFactor = clamp(Math.log10(this.genome.files + 1) / 4, 0.12, 1);
+    const count = Math.round(clamp(this.genome.traits.population * fileFactor * (this.width < 760 ? 0.34 : 0.58), 36, this.width < 760 ? 110 : 240));
     const positions = new Float32Array(count * 3);
     const colors = new Float32Array(count * 3);
 
