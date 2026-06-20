@@ -6,16 +6,23 @@
     <title>Repo Terrarium</title>
     <meta
       name="description"
-      content="Turn any GitHub repository into a living procedural ecosystem. Built by Joshua Pond."
+      content="Turn any GitHub repository into a living WebGL terrarium with a visible DNA strand. Built by Joshua Pond."
     >
     <meta property="og:title" content="Repo Terrarium">
     <meta
       property="og:description"
-      content="Every GitHub repo grows into a deterministic little ecosystem."
+      content="Every GitHub repo grows into a deterministic WebGL organism with its own DNA."
     >
     <meta name="theme-color" content="#080a0b">
     <link rel="icon" href="./favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="./styles.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js"
+        }
+      }
+    </script>
   </head>
   <body>
     <canvas id="terrarium" aria-label="Living repository terrarium"></canvas>
@@ -37,6 +44,9 @@
         <span id="status-text" data-tone="plain">warming the glass</span>
         <code id="dna">RT-0000</code>
       </div>
+      <button id="inspect-toggle" class="inspect-toggle" type="button" aria-controls="inspector" aria-expanded="false">
+        inspect
+      </button>
     </header>
 
     <main class="readout" aria-live="polite" aria-label="Current terrarium">
@@ -46,13 +56,22 @@
       <section id="stats" class="stats" aria-label="Key genome stats"></section>
     </main>
 
-    <section class="inspector" tabindex="0" aria-label="Genome inspector">
-      <div class="inspector-tab">
-        <span>inspect</span>
-        <strong id="gc-readout">GC 0%</strong>
+    <section id="inspector" class="inspector" aria-label="Genome inspector" aria-hidden="true">
+      <div class="inspector-head">
+        <div>
+          <span>Genome Inspector</span>
+          <strong id="gc-readout">GC 0%</strong>
+        </div>
+        <button id="inspector-close" type="button">close</button>
       </div>
       <div class="inspector-body">
-        <div class="inspector-section">
+        <div class="presets" aria-label="Example repositories">
+          <button type="button" data-repo="torvalds/linux">linux</button>
+          <button type="button" data-repo="rust-lang/rust">rust</button>
+          <button type="button" data-repo="vercel/next.js">next</button>
+          <button type="button" data-repo="sveltejs/svelte">svelte</button>
+        </div>
+        <div class="inspector-section dna-panel">
           <div class="section-head">
             <span>DNA strand</span>
             <small>first 144 bases</small>
@@ -76,12 +95,12 @@
       </div>
     </section>
 
-    <aside class="examples" aria-label="Example repositories">
-      <button type="button" data-repo="torvalds/linux">linux</button>
-      <button type="button" data-repo="rust-lang/rust">rust</button>
-      <button type="button" data-repo="vercel/next.js">next</button>
-      <button type="button" data-repo="sveltejs/svelte">svelte</button>
-    </aside>
+    <section class="dna-legend" aria-label="DNA base colors">
+      <span>A</span>
+      <span>C</span>
+      <span>G</span>
+      <span>T</span>
+    </section>
 
     <footer class="controls" aria-label="Terrarium controls">
       <button id="pause-button" type="button">pause</button>
