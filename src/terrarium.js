@@ -37,6 +37,7 @@ export class Terrarium {
     this.entities = [];
     this.nutrients = [];
     this.pulses = [];
+    this.helixProfile = this.createHelixProfile(genome);
     this.births = 0;
     this.deaths = 0;
     this.frame = 0;
@@ -120,6 +121,24 @@ export class Terrarium {
     for (let index = 0; index < Math.max(90, Math.round(population * 0.9)); index += 1) {
       this.spawnNutrient(paths[index % paths.length], true);
     }
+  }
+
+  createHelixProfile(genome) {
+    const random = seededRandom(`${genome.seedHex}:visible-helix:${genome.digitalDna.sequence.slice(0, 48)}`);
+    const dominant = genome.digitalDna.dominantCodons[0]?.triplet || "ATG";
+    const dominantValue = dominant.split("").reduce((sum, base) => sum + BASES.indexOf(base) + 1, 0);
+    const gcBias = genome.digitalDna.gc - 0.5;
+
+    return {
+      amplitude: 24 + random() * 34 + Math.abs(gcBias) * 28,
+      spacing: 7.5 + random() * 4.5,
+      twist: 0.26 + random() * 0.24 + dominantValue * 0.012,
+      tilt: (random() - 0.5) * 0.42,
+      drift: (random() - 0.5) * 18,
+      visibleBases: 42 + Math.floor(random() * 28),
+      startOffset: Math.floor(random() * genome.digitalDna.sequence.length),
+      labelEvery: 8 + Math.floor(random() * 6)
+    };
   }
 
   createOrganism({ path, language, generation, energy, x, y, parent }) {
@@ -394,61 +413,67 @@ export class Terrarium {
   drawDnaStrand() {
     const ctx = this.ctx;
     const dna = this.genome.digitalDna;
+    const profile = this.helixProfile;
     const sequence = dna.sequence;
-    const visible = this.width < 700 ? 36 : 58;
-    const spacing = this.width < 700 ? 8 : 10;
+    const compact = this.width < 760;
+    const visible = compact ? Math.min(36, profile.visibleBases) : profile.visibleBases;
+    const spacing = compact ? Math.min(8, profile.spacing) : profile.spacing;
     const height = visible * spacing;
-    const x = this.width < 700 ? this.width * 0.5 : this.width * 0.62;
-    const y = this.width < 700 ? this.height * 0.26 : this.height * 0.12;
-    const amplitude = this.width < 700 ? 28 : 48;
-    const start = (Math.floor(this.frame * 0.18) * 3) % Math.max(3, sequence.length - visible);
+    const amplitude = compact ? Math.min(28, profile.amplitude * 0.68) : profile.amplitude;
+    const x = compact ? this.width - 78 : this.width - 210 + profile.drift;
+    const y = compact ? 132 : 94;
+    const start = (profile.startOffset + Math.floor(this.frame * (0.12 + this.genome.traits.mutationRate)) * 3) % Math.max(3, sequence.length - visible);
 
     ctx.save();
     ctx.globalCompositeOperation = "lighter";
     ctx.lineWidth = 1;
+    ctx.translate(x, y);
+    ctx.rotate(profile.tilt);
 
     for (let index = 0; index < visible; index += 1) {
       const base = sequence[(start + index) % sequence.length];
       const pair = PAIRS[base];
-      const phase = index * 0.42 + this.frame * 0.018;
-      const yy = y + index * spacing;
-      const leftX = x + Math.sin(phase) * amplitude;
-      const rightX = x - Math.sin(phase) * amplitude;
+      const phase = index * profile.twist + this.frame * 0.014;
+      const yy = index * spacing;
+      const waist = 0.78 + Math.sin(index * 0.17 + this.genome.seed * 0.00001) * 0.2;
+      const leftX = Math.sin(phase) * amplitude * waist;
+      const rightX = -Math.sin(phase) * amplitude * waist;
       const front = Math.cos(phase) > 0;
 
-      ctx.globalAlpha = front ? 0.52 : 0.16;
+      ctx.globalAlpha = front ? 0.42 : 0.12;
       ctx.strokeStyle = BASE_COLORS[base];
       ctx.beginPath();
       ctx.moveTo(leftX, yy);
       ctx.lineTo(rightX, yy);
       ctx.stroke();
 
-      ctx.globalAlpha = front ? 0.9 : 0.32;
+      ctx.globalAlpha = front ? 0.82 : 0.26;
       ctx.fillStyle = BASE_COLORS[base];
       ctx.beginPath();
-      ctx.arc(leftX, yy, front ? 3.1 : 2.1, 0, TAU);
+      ctx.arc(leftX, yy, front ? 2.6 : 1.8, 0, TAU);
       ctx.fill();
 
       ctx.fillStyle = BASE_COLORS[pair];
       ctx.beginPath();
-      ctx.arc(rightX, yy, front ? 3.1 : 2.1, 0, TAU);
+      ctx.arc(rightX, yy, front ? 2.6 : 1.8, 0, TAU);
       ctx.fill();
 
-      if (front && index % 7 === 0 && this.width > 760) {
-        ctx.globalAlpha = 0.72;
+      if (front && index % profile.labelEvery === 0 && this.width > 980) {
+        ctx.globalAlpha = 0.54;
         ctx.fillStyle = "rgba(244, 255, 249, 0.72)";
         ctx.font = "11px ui-monospace, SFMono-Regular, Menlo, monospace";
-        ctx.fillText(`${base}-${pair}`, x + amplitude + 14, yy + 3);
+        ctx.fillText(`${base}-${pair}`, amplitude + 13, yy + 3);
       }
     }
 
-    ctx.globalAlpha = 0.25;
+    ctx.globalAlpha = 0.2;
     ctx.strokeStyle = "rgba(244, 255, 249, 0.7)";
     ctx.beginPath();
     for (let index = 0; index < visible; index += 1) {
-      const phase = index * 0.42 + this.frame * 0.018;
-      const xx = x + Math.sin(phase) * amplitude;
-      const yy = y + index * spacing;
+      const phase = index * profile.twist + this.frame * 0.014;
+      const waist = 0.78 + Math.sin(index * 0.17 + this.genome.seed * 0.00001) * 0.2;
+      const xx = Math.sin(phase) * amplitude * waist;
+      const yy = index * spacing;
       if (index === 0) ctx.moveTo(xx, yy);
       else ctx.lineTo(xx, yy);
     }
@@ -456,17 +481,18 @@ export class Terrarium {
 
     ctx.beginPath();
     for (let index = 0; index < visible; index += 1) {
-      const phase = index * 0.42 + this.frame * 0.018;
-      const xx = x - Math.sin(phase) * amplitude;
-      const yy = y + index * spacing;
+      const phase = index * profile.twist + this.frame * 0.014;
+      const waist = 0.78 + Math.sin(index * 0.17 + this.genome.seed * 0.00001) * 0.2;
+      const xx = -Math.sin(phase) * amplitude * waist;
+      const yy = index * spacing;
       if (index === 0) ctx.moveTo(xx, yy);
       else ctx.lineTo(xx, yy);
     }
     ctx.stroke();
 
-    ctx.globalAlpha = 0.28;
+    ctx.globalAlpha = 0.16;
     ctx.strokeStyle = "rgba(244, 255, 249, 0.28)";
-    ctx.strokeRect(x - amplitude - 18, y - 16, amplitude * 2 + 36, height + 28);
+    ctx.strokeRect(-amplitude - 15, -14, amplitude * 2 + 30, height + 24);
     ctx.restore();
   }
 
