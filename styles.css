@@ -88,6 +88,7 @@ input:focus-visible {
 .readout,
 .inspector,
 .dna-legend,
+.life-toggle,
 .controls,
 .credit {
   position: fixed;
@@ -711,9 +712,16 @@ h1 {
   }
 
   .dna-legend,
-  .life-toggle,
   .credit {
     display: none;
+  }
+
+  .life-toggle {
+    right: 14px;
+    bottom: 70px;
+    width: 40px;
+    min-height: 40px;
+    border-radius: 11px;
   }
 
   .controls {
